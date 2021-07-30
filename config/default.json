@@ -1,0 +1,3 @@
+{
+    "mongoURI":"mongodb+srv://toufik:toufik103@db.niaik.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+}
