@@ -3,6 +3,8 @@ const router = express.Router();
 const { check, validationResult} = require('express-validator/check');
 const User = require('../../modules/User');
 const gravatar = require('gravatar'); 
+const jwt = require('jsonwebtoken'); 
+const config = require('config'); 
 // User registration 
 
 router.post('/',[
@@ -40,17 +42,30 @@ async (req,res)=>{
         }); 
 
         await user.save(); 
-        res.send('User register'); 
+        // create a paylod 
+        const paylod = {
+            user:{
+                id: user.id
+            }
+        }; 
+        // jwt sign 
+        jwt.sign(
+            paylod,
+            config.get('jwtSecret'),
+            (err, token)=>{
+                if(err) throw err;
+                res.json({token}); 
+            }
+            )
+    
         
-
+            console.log(req.body); 
     } catch (error) {
         console.error(error.message)
-        
     }
 
 
-    console.log(req.body); 
-    res.send('user route');
+  
 });
 
 
