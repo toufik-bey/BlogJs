@@ -32,5 +32,14 @@ router.post('/', [auth, [
     
     
 })
+router.get('/',auth,async(req, res)=>{
+    try {
+        const posts = await Poste.find().sort({date:-1})
+        res.json(posts)
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('server crached')
+    }
+})
 
 module.exports = router;  
