@@ -41,5 +41,39 @@ router.get('/',auth,async(req, res)=>{
         res.status(500).send('server crached')
     }
 })
+router.get('/:id',auth,async(req, res)=>{
+
+
+    try {
+        const post = await Poste.findById(req.params.id); 
+        if(!post){
+            return res.status(404).json({msg:'post not found'})
+        }
+        
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('server crached')
+    }
+})
+
+router.delete('/:id', auth ,async(req,res)=>{
+      try {
+          const post = await Post.findById(req.params.id); 
+
+          // check user
+          if(post.user.toString()!==req.params.id){
+            res.status(401).json({msg:'User not authorised'})
+          }
+          await post.remove();
+          res.json({msg:'message removed'}); 
+
+      } catch (error) {
+           
+        console.error(error.message); 
+        res.status(500).send('server crached'); 
+          
+      }
+    
+})
 
 module.exports = router;  
