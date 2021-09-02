@@ -101,7 +101,7 @@ router.put('/unlike/:id', auth , async(req,res)=>{
         if(post.likes.filter(like=>likes.user.toString()===req.user.id).length==0){
             return res.status(400).json({msg:'post has not yet been liked'})
         }
-   // remove index
+        // remove index
         const removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user.id); 
         post.likes.splice(removeIndex , 1); 
         await post.save(); 
@@ -111,6 +111,37 @@ router.put('/unlike/:id', auth , async(req,res)=>{
     }
 }); 
 
+// add comment 
+// privet route
+// using post 
 
+router.post('/comment/:id', [auth,[
+    check('text', 'text is empty').not().isEmpty()
+]],
+ async(req,res)=>{
+   try {
+        const errors = validationResult(req); 
+    if(!errors.isEmpty()){
+        res.status(400).json({errors:errors.array()})
+    };
+
+    const user =await User.findById(req.user.id).select('-password');
+    const post =await Post.findById(req.params.id); 
+    const newComment ={
+        text: req.body.text,
+        name: user.name, 
+        avatar: user.avatar,
+        user:  req.user.id
+    };
+    post.comment.unshift(newComment); 
+    await post.save(); 
+    
+   } catch (error) {
+       
+    console.error(error.message); 
+    res.status(500).send('server crached'); 
+      
+   }
+})
 
 module.exports = router;  
