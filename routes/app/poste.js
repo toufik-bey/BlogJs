@@ -142,6 +142,36 @@ router.post('/comment/:id', [auth,[
     res.status(500).send('server crached'); 
       
    }
+});
+// delete the comment 
+
+router.delete('/comment/:id/:comment_id', auth, async(req, res)=>{
+    try {
+      const post = await Post.findById(req.params.id); 
+      // pull comment
+      const comment = post.comments.find(comment => comment.id===req.params.comment_id); 
+      // check if the comment exist 
+      if(!comment){
+          return res.status(404).json({msg:'comment does not exist'});
+
+      }; 
+
+      // check the user
+
+      if(comment.user.toString()!= req.user.id){
+        return res.status(404).json({msg:'user  does not exist'});
+      }; 
+
+      const removIndex = post.comments.map(comment =>comment.user.toString()).indexOf(req.user.id);
+      post.comments.splice(removIndex,1); 
+      await post.save(); 
+
+      
+    } catch (error) {
+        console.error(error.message); 
+        res.status(500).send('server crached'); 
+          
+    }
 })
 
 module.exports = router;  

@@ -34,7 +34,7 @@ async (req,res)=>{
             d:'mm'
         })
 
-        user = new User({
+         user = new User({
             name,
             email,
             avatar,
