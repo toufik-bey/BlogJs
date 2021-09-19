@@ -109,7 +109,7 @@ router.delete('/',auth,async(req,res)=>{
 		await User.findOneAndDelete({_id: req.user.id}); 
 
 		res.json({msg:'user deleted'}); 
-		
+
 
 
 	} catch (error) {
@@ -117,5 +117,58 @@ router.delete('/',auth,async(req,res)=>{
 		res.status(500).send('server crached')
 	}
 })
+
+// @route    api/profile/exprience
+// @descrpt  add expreince to the profile
+// @access   private
+
+router.put('/expreince',[auth,[
+	check('title','title is required').not().isEmpty(),
+	check('company','company is required').not().isEmpty(),
+	check('from', 'the date is required').not().isEmpty(),
+]],
+
+async(req,res)=>{
+
+	const errors = validationResult(req); 
+	if(!errors.isEmpty()){
+	  return	res.status(400).json({errors: errors.array()})
+	}
+	const {
+		title,
+		company,
+		location,
+		from,
+		to,
+		current,
+		description
+	} = req.body; 
+
+	const newExprience = {
+		title,
+		company,
+		location,
+		from,
+		to,
+		current,
+		description
+	};
+
+	try {
+
+		const profile = await Profile.findOne({user: req.user.id}); 
+		profile.experience.unshift(newExprience); 
+		await profile.save(); 
+
+		res.json(profile)
+		
+	} catch (error) {
+		console.error(error.message); 
+		res.status(500).send('server error'); 
+	}
+}
+
+)
+
 
 module.exports = router;  
