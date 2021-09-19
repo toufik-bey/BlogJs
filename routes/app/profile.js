@@ -21,6 +21,10 @@ router.get('/me',auth, async (req, res) => {
     }
 
 }); 
+
+//add a profile 
+//private route
+
 router.post('/',[auth,[
 check('skilles','skilles are required').not().isEmpty(),
 check('status','status is required').not().isEmpty(),
@@ -91,6 +95,27 @@ check('status','status is required').not().isEmpty(),
         console.error(error.message)
         res.status(500).send('server crached'); 
     }
+})
+
+// @ DElete profile ,user and post
+// @ Private 
+
+router.delete('/',auth,async(req,res)=>{
+	try {
+
+		// Delete the profile 
+		await Profile.findOneAndDelete({user: req.user.id}); 
+		// Delete the user 
+		await User.findOneAndDelete({_id: req.user.id}); 
+
+		res.json({msg:'user deleted'}); 
+		
+
+
+	} catch (error) {
+		console.error(error.message); 
+		res.status(500).send('server crached')
+	}
 })
 
 module.exports = router;  
