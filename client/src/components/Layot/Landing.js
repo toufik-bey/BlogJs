@@ -1,4 +1,6 @@
 import React from 'react'; 
+import { Link } from 'react-router-dom';
+
 
 
 
@@ -14,8 +16,8 @@ const Landing = ()=>{
                         create a Devlopper profile and porfolio, share post and get help from other devloppers
                     </p>
                     <div className='button'>
-                        <a href='/login' className='btn btn-primary'>Sing up </a>
-                        <a href='/login' className='btn btn-light'>Log in </a>
+                        <Link  to='/register' className='btn btn-primary'>Sing up </Link>
+                        <Link  to='/login' className='btn btn-light'>Log in </Link>
                     </div>
                  </div>
             </div>
